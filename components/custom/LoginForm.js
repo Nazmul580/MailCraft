@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { z } from "zod";
 import {
   Form,
@@ -16,6 +16,8 @@ import { FcGoogle } from "react-icons/fc";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Eye, EyeOff } from "lucide-react";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 const LoginForm = () => {
   const loginSchema = z.object({
@@ -29,13 +31,20 @@ const LoginForm = () => {
       password: "",
     },
   });
+
+  const [showpass, setShowPass] = useState(false);
+
+  const handleShowPass = () => {
+    setShowPass((prev) => !prev);
+  };
+
   const onSubmit = (values) => {
     console.log("Register Data:", values);
     // send to backend API
   };
   return (
     <div className=" px-10 py-15 rounded-md shadow-sm">
-      <h2 className="text-center text-2xl font-bold py-4">
+      <h2 className="text-center text-2xl font-bold py-4 capitalize">
         Login to your account
       </h2>
       <Form {...form}>
@@ -66,7 +75,24 @@ const LoginForm = () => {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input type="password" {...field} />
+                  <div className="relative">
+                    <Input
+                      type={showpass ? "text" : "password"}
+                      {...field}
+                      className="pr-10"
+                    />
+                    {showpass ? (
+                      <Eye
+                        className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400"
+                        onClick={handleShowPass}
+                      />
+                    ) : (
+                      <EyeOff
+                        className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400"
+                        onClick={handleShowPass}
+                      />
+                    )}
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -80,6 +106,7 @@ const LoginForm = () => {
             variant={"outline"}
             type="button"
             className="w-full cursor-pointer"
+            onClick={() => signIn("google", { callbackUrl: "/" })}
           >
             <FcGoogle />
             Login With Google
