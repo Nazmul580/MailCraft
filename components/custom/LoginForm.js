@@ -38,10 +38,24 @@ const LoginForm = () => {
     setShowPass((prev) => !prev);
   };
 
-  const onSubmit = (values) => {
-    console.log("Register Data:", values);
-    // send to backend API
+  const onSubmit = async (values) => {
+    try {
+      const res = await signIn("credentials", {
+        redirect: false,
+        ...values,
+      });
+
+      if (res?.error) throw new Error(res.error);
+      form.reset();
+    } catch (error) {
+      if (error.message === "CredentialsSignin") {
+        console.log("Ivalid Credentials");
+      } else {
+        console.log(error.message);
+      }
+    }
   };
+
   return (
     <div className=" px-10 py-15 rounded-md shadow-sm">
       <h2 className="text-center text-2xl font-bold py-4 capitalize">
