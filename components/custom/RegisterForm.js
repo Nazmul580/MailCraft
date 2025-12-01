@@ -18,6 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { signIn } from "next-auth/react";
 
 const RegisterForm = () => {
   const registerSchema = z.object({
@@ -33,9 +34,22 @@ const RegisterForm = () => {
       password: "",
     },
   });
-  const onSubmit = (values) => {
+  const onSubmit = async (values) => {
     console.log("Register Data:", values);
-    // send to backend API
+    try {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        body: JSON.stringify(values),
+        headers: {
+          "Content-Type": "Application/json",
+        },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error("registration faild:", data.message);
+      console.log("user create successfull", data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -98,9 +112,10 @@ const RegisterForm = () => {
             variant={"outline"}
             type="button"
             className="w-full cursor-pointer"
+            onClick={() => signIn("google", { callbackUrl: "/" })}
           >
             <FcGoogle />
-            Login With Google
+            Continue With Google
           </Button>
 
           <p className="font-bold text-gray-400">

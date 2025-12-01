@@ -7,6 +7,38 @@ import { dbConnect } from "./lib/dbConnect";
 import { User } from "./models/userModel";
 import bcrypt from "bcryptjs";
 
+async function refreshAccessToken(token) {
+  try {
+    const url =
+      "https://oauth2.googleapis.com/token?" +
+      new URLSearchParams({
+        client_id: process.env.GOOGLE_CLIENT_ID,
+        client_secret: process.env.GOOGLE_CLIENT_SECRET,
+        grant_type: "refresh_token",
+        refresh_token: token.refreshToken,
+      });
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    });
+
+    const refreshedTokens = await response.json();
+
+    if (!response.ok) throw refreshedTokens;
+
+    return {
+      ...token,
+      accessToken: refreshedTokens.access_token,
+      accessTokenExpires: Date.now() + refreshedTokens.expires_in * 1000,
+      refreshToken: refreshedTokens.refresh_token ?? token.refreshToken,
+    };
+  } catch (error) {
+    console.error("Refresh token error", error);
+    return { ...token, error: "RefreshAccessTokenError" };
+  }
+}
+
 export const {
   handlers: { GET, POST },
   auth,
@@ -59,4 +91,40 @@ export const {
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user, account }) {
+      // first login
+      if (user && account) {
+        return {
+          accessToken: account.access_token,
+          accessTokenExpires: account.expires_at
+            ? account.expires_at * 1000
+            : Date.now() + 60 * 60 * 1000,
+          refreshToken: account.refresh_token,
+          user,
+        };
+      }
+
+      // refresh access token if expired
+      if (token.accessTokenExpires && Date.now() > token.accessTokenExpires) {
+        if (token.refreshToken) {
+          return await refreshAccessToken(token);
+        }
+        return { ...token, error: "AccessTokenExpired" };
+      }
+
+      return token;
+    },
+    async session({ session, token }) {
+      session.user = token.user;
+      session.accessToken = token.accessToken;
+      session.refreshToken = token.refreshToken;
+      session.expires = new Date(
+        token.accessTokenExpires || Date.now() + 24 * 60 * 60 * 1000
+      ).toISOString();
+      return session;
+    },
+  },
+  secret: process.env.NEXTAUTH_SECRET,
+  trustHost: true,
 });

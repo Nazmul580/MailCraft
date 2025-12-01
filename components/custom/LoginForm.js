@@ -17,7 +17,8 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff } from "lucide-react";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const LoginForm = () => {
   const loginSchema = z.object({
@@ -38,6 +39,8 @@ const LoginForm = () => {
     setShowPass((prev) => !prev);
   };
 
+  const router = useRouter();
+
   const onSubmit = async (values) => {
     try {
       const res = await signIn("credentials", {
@@ -47,11 +50,12 @@ const LoginForm = () => {
 
       if (res?.error) throw new Error(res.error);
       form.reset();
+      router.push("/");
     } catch (error) {
       if (error.message === "CredentialsSignin") {
         console.log("Ivalid Credentials");
       } else {
-        console.log(error.message);
+        console.log(error);
       }
     }
   };
