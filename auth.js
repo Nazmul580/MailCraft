@@ -6,38 +6,9 @@ import CredentialProvider from "next-auth/providers/credentials";
 import { dbConnect } from "./lib/dbConnect";
 import { User } from "./models/userModel";
 import bcrypt from "bcryptjs";
-
-async function refreshAccessToken(token) {
-  try {
-    const url =
-      "https://oauth2.googleapis.com/token?" +
-      new URLSearchParams({
-        client_id: process.env.GOOGLE_CLIENT_ID,
-        client_secret: process.env.GOOGLE_CLIENT_SECRET,
-        grant_type: "refresh_token",
-        refresh_token: token.refreshToken,
-      });
-
-    const response = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    });
-
-    const refreshedTokens = await response.json();
-
-    if (!response.ok) throw refreshedTokens;
-
-    return {
-      ...token,
-      accessToken: refreshedTokens.access_token,
-      accessTokenExpires: Date.now() + refreshedTokens.expires_in * 1000,
-      refreshToken: refreshedTokens.refresh_token ?? token.refreshToken,
-    };
-  } catch (error) {
-    console.error("Refresh token error", error);
-    return { ...token, error: "RefreshAccessTokenError" };
-  }
-}
+import jwt from "jsonwebtoken";
+import refreshGoogleAccessToken from "./lib/refreshGoogleAccessToken";
+import refreshCredentialsAccessToken from "./lib/refreshCredentialsAccessToken";
 
 export const {
   handlers: { GET, POST },
@@ -80,10 +51,25 @@ export const {
             user.password
           );
           if (!isMatch) throw new Error("invalid email or password!");
+
+          const accessToken = jwt.sign(
+            { id: user._id, email: user.email },
+            process.env.JWT_ACCESS_TOKEN_SECRET,
+            { expiresIn: "1h" }
+          );
+          const refreshToken = jwt.sign(
+            { id: user._id, email: user.email },
+            process.env.JWT_REFRESH_TOKEN_SECRET,
+            { expiresIn: "30d" }
+          );
+
           return {
             id: user._id.toString(),
             email: user.email,
             name: user.name,
+            accessToken,
+            refreshToken,
+            expiresIn: Date.now() + 3600000,
           };
         } catch (error) {
           console.log(error.message);
@@ -93,35 +79,42 @@ export const {
   ],
   callbacks: {
     async jwt({ token, user, account }) {
-      // first login
+      // on initial singIn either (provider or credentials)
       if (user && account) {
-        return {
-          accessToken: account.access_token,
-          accessTokenExpires: account.expires_at
-            ? account.expires_at * 1000
-            : Date.now() + 60 * 60 * 1000,
-          refreshToken: account.refresh_token,
-          user,
+        token.user = {
+          id: user.id,
+          email: user.email,
+          name: user.name ?? user.email.split("@")[0],
         };
+        token.provider = account.provider || "credentials";
+        token.accessToken = account.access_token ?? user.accessToken;
+        token.accessTokenExpires = account.expires_at
+          ? account.expires_at * 1000
+          : Date.now() + (user.expiresIn ?? 3600000);
+
+        token.refreshToken = account.refresh_token ?? user.refreshToken;
+        return token;
       }
 
-      // refresh access token if expired
-      if (token.accessTokenExpires && Date.now() > token.accessTokenExpires) {
-        if (token.refreshToken) {
-          return await refreshAccessToken(token);
-        }
-        return { ...token, error: "AccessTokenExpired" };
-      }
+      // if token is not expired, just return it
+      if (token.accessToken && Date.now() < token.accessTokenExpires - 15000)
+        return token;
 
-      return token;
+      // refresh token based on provider
+      if (token.provider === "google") {
+        return await refreshGoogleAccessToken(token);
+      } else {
+        return await refreshCredentialsAccessToken(token);
+      }
     },
     async session({ session, token }) {
-      session.user = token.user;
+      session.user = token.user || {};
+      session.user.name = session.user.name ?? token.user.name;
       session.accessToken = token.accessToken;
       session.refreshToken = token.refreshToken;
-      session.expires = new Date(
-        token.accessTokenExpires || Date.now() + 24 * 60 * 60 * 1000
-      ).toISOString();
+      session.expires_at = token.accessTokenExpires;
+      session.provider = token.provider;
+
       return session;
     },
   },
