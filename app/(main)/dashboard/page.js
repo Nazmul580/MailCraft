@@ -8,6 +8,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
+import Link from "next/link";
 import { TbFolderCode } from "react-icons/tb";
 
 const DashboardPage = async () => {
@@ -17,7 +18,11 @@ const DashboardPage = async () => {
     <section className="container mx-auto py-10">
       <div className="flex justify-between items-center">
         <h2 className="font-semibold text-lg">Hello, {session?.user?.name}</h2>
-        <Button className={"cursor-pointer"}>Create New Email Template</Button>
+        <Link href={"/create"}>
+          <Button className={"cursor-pointer"}>
+            Create New Email Template
+          </Button>
+        </Link>
       </div>
       <h3 className="text-primary mt-5 text-lg">Workspace</h3>
 
@@ -33,9 +38,9 @@ const DashboardPage = async () => {
           </EmptyDescription>
         </EmptyHeader>
         <EmptyContent>
-          <div className="flex gap-2">
-            <Button>Create Template</Button>
-          </div>
+          <Link href={"/create"}>
+            <Button className={"cursor-pointer"}>Create Template</Button>
+          </Link>
         </EmptyContent>
       </Empty>
     </section>
