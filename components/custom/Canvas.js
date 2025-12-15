@@ -1,15 +1,21 @@
 "use client";
 
+import LayoutComponent from "./LayoutComponent";
+
 const Canvas = ({ canvasItems, onDrop, onDragOver, onSelectItem }) => {
-  console.log(canvasItems);
-  const getItems = (item, index) => {};
+  const getItems = (item) => {
+    if (item?.type === "layout") return <LayoutComponent item={item} />;
+  };
   return (
     <div
       className="flex-1 p-4 min-h-screen border"
       onDrop={onDrop}
       onDragOver={onDragOver}
     >
-      {canvasItems.map((item, index) => getItems(item, index))}
+      {canvasItems?.length > 0 &&
+        canvasItems.map((item, index) => (
+          <div key={index}>{getItems(item)}</div>
+        ))}
     </div>
   );
 };
