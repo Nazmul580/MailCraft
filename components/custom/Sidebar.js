@@ -14,6 +14,15 @@ const Sidebar = () => {
       },
     });
   };
+  const onDragElementStart = (element) => {
+    setDragElementLayout({
+      dragElement: {
+        ...element,
+        id: window.crypto.randomUUID(),
+      },
+    });
+  };
+
   return (
     <div className="w-1/4 p-4 border-r">
       <h2 className="font-bold mb-2">Layouts</h2>
@@ -33,7 +42,7 @@ const Sidebar = () => {
         <div
           key={el.id}
           draggable
-          onDragStart={(e) => onDragStart(e, el, "element")}
+          onDragStart={() => onDragElementStart(el)}
           className="p-2 border mb-2 cursor-grab"
         >
           {el.icon} {el.name}

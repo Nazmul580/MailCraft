@@ -1,4 +1,4 @@
-const ElementComponent = () => {
+const ElementComponent = ({ layout }) => {
   return <div>ElementComponent</div>;
 };
 
