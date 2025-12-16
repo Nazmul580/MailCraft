@@ -1,4 +1,19 @@
-const Sidebar = ({ elements, layouts, onDragStart }) => {
+"use client";
+import useLayoutContext from "@/context/LayoutContext";
+import { elements } from "@/data/ElementData";
+import { layouts } from "@/data/Layouts";
+
+const Sidebar = () => {
+  const { dragElementLayout, setDragElementLayout } = useLayoutContext();
+
+  const onDragLayoutStart = (layout) => {
+    setDragElementLayout({
+      dragLayout: {
+        ...layout,
+        id: window.crypto.randomUUID(),
+      },
+    });
+  };
   return (
     <div className="w-1/4 p-4 border-r">
       <h2 className="font-bold mb-2">Layouts</h2>
@@ -6,7 +21,7 @@ const Sidebar = ({ elements, layouts, onDragStart }) => {
         <div
           key={layout.id}
           draggable
-          onDragStart={(e) => onDragStart(e, layout, "layout")}
+          onDragStart={() => onDragLayoutStart(layout)}
           className="p-2 border mb-2 cursor-grab"
         >
           {layout.icon} {layout.name}

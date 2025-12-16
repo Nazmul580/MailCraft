@@ -1,14 +1,14 @@
-const LayoutComponent = ({ item }) => {
+const LayoutComponent = ({ layout }) => {
   return (
     <div
       className=""
       style={{
-        ...item?.style,
+        ...layout?.style,
         display: "grid",
-        gridTemplateColumns: `repeat(${item?.numOfCol}, 1fr)`,
+        gridTemplateColumns: `repeat(${layout?.numOfCol}, 1fr)`,
       }}
     >
-      {Array.from({ length: item?.numOfCol }).map((_, i) => (
+      {Array.from({ length: layout?.numOfCol }).map((_, i) => (
         <div key={i} className="border border-dotted min-h-10">
           {i + 1}
         </div>
