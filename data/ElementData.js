@@ -1,9 +1,17 @@
+import { AiOutlineVerticalAlignMiddle } from "react-icons/ai";
+import { CiImageOn } from "react-icons/ci";
+import { FiCommand } from "react-icons/fi";
+import { IoShareSocialOutline } from "react-icons/io5";
+import { PiTextbox } from "react-icons/pi";
+import { RxButton } from "react-icons/rx";
+
 export const elements = [
   {
     id: "text-1",
     type: "text",
+    tag: "p",
     name: "Text Block",
-    icon: "📝",
+    icon: <PiTextbox size={20} />,
     defaultContent: "Enter your text here...",
     style: {
       fontSize: "16px",
@@ -27,8 +35,9 @@ export const elements = [
   {
     id: "image-1",
     type: "image",
+    tag: "img", // Image er jonno 'img' tag
     name: "Image",
-    icon: "🖼️",
+    icon: <CiImageOn size={20} />,
     defaultContent: "https://via.placeholder.com/150",
     style: {
       width: "100%",
@@ -41,8 +50,9 @@ export const elements = [
   {
     id: "button-1",
     type: "button",
+    tag: "button", // Button er jonno 'button' tag
     name: "Button",
-    icon: "🔘",
+    icon: <RxButton size={20} />,
     defaultContent: "Click Me",
     style: {
       backgroundColor: "#007BFF",
@@ -67,10 +77,12 @@ export const elements = [
   {
     id: "divider-1",
     type: "divider",
+    tag: "hr", // Divider er jonno 'hr' tag
     name: "Divider",
-    icon: "➖",
+    icon: <AiOutlineVerticalAlignMiddle size={20} />,
     style: {
       height: "1px",
+      border: "none",
       backgroundColor: "#cccccc",
       margin: "10px 0",
     },
@@ -79,8 +91,9 @@ export const elements = [
   {
     id: "social-1",
     type: "social",
+    tag: "div", // Social links container er jonno 'div'
     name: "Social Links",
-    icon: "🔗",
+    icon: <IoShareSocialOutline size={20} />,
     defaultContent: ["facebook", "twitter", "instagram"],
     style: {
       display: "flex",
@@ -89,5 +102,18 @@ export const elements = [
       margin: "10px 0",
     },
     settings: ["display", "gap", "justifyContent", "margin"],
+  },
+  {
+    id: "logo",
+    type: "image",
+    tag: "img", // Social links container er jonno 'div'
+    name: "Logo",
+    icon: <FiCommand size={20} />,
+    defaultContent: "https://via.placeholder.com/150",
+    style: {
+      margin: "0",
+      maxHeigth: "40px",
+    },
+    settings: ["width", "height", "margin"],
   },
 ];

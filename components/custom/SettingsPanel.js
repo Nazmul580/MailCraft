@@ -3,7 +3,7 @@ const SettingsPanel = ({ selectedItem, onChangeStyle }) => {
     return <div className="w-1/4 p-4 border-l">Select an item</div>;
 
   return (
-    <div className="w-1/4 p-4 border-l">
+    <div className="w-1/6 p-4 border-l">
       <h2 className="font-bold mb-2">Settings: {selectedItem.name}</h2>
       {selectedItem.settings.map((prop) => (
         <div key={prop} className="mb-2">

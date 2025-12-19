@@ -2,6 +2,7 @@
 import useLayoutContext from "@/context/LayoutContext";
 import useTemplateContext from "@/context/TemplateContext";
 import { useState } from "react";
+import ElementComponent from "./ElementComponent";
 
 const LayoutComponent = ({ layout }) => {
   const [dragOver, setDragOver] = useState();
@@ -27,7 +28,7 @@ const LayoutComponent = ({ layout }) => {
     setDragOver(null);
   };
   const getElement = (element) => {
-    return element?.type;
+    if (element?.type) return <ElementComponent element={element} />;
   };
   return (
     <div
