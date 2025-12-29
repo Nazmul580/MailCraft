@@ -19,7 +19,6 @@ export const layouts = [
       display: "grid",
       gridTemplateColumns: "repeat(1, 1fr)",
     },
-    settings: ["padding", "margin", "backgroundColor"],
   },
   {
     id: "layout-2",
@@ -34,7 +33,6 @@ export const layouts = [
       display: "grid",
       gridTemplateColumns: "repeat(2, 1fr)",
     },
-    settings: ["padding", "margin", "backgroundColor"],
   },
   {
     id: "layout-3",
@@ -49,7 +47,6 @@ export const layouts = [
       display: "grid",
       gridTemplateColumns: "repeat(3, 1fr)",
     },
-    settings: ["padding", "margin", "backgroundColor"],
   },
   {
     id: "layout-4",
@@ -64,6 +61,5 @@ export const layouts = [
       display: "grid",
       gridTemplateColumns: "repeat(4, 1fr)",
     },
-    settings: ["padding", "margin", "backgroundColor"],
   },
 ];

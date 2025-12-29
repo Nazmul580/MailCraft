@@ -6,7 +6,8 @@ import ElementComponent from "./ElementComponent";
 
 const LayoutComponent = ({ layout }) => {
   const [dragOver, setDragOver] = useState();
-  const { template, setTemplate } = useTemplateContext();
+  const { template, setTemplate, selectedElement, setSelectedElement } =
+    useTemplateContext();
   const { dragElementLayout, setDragElementLayout } = useLayoutContext();
 
   const handleDragOver = (e, index) => {
@@ -35,8 +36,6 @@ const LayoutComponent = ({ layout }) => {
       className=""
       style={{
         ...layout?.style,
-        display: "grid",
-        gridTemplateColumns: `repeat(${layout?.numOfCol}, 1fr)`,
       }}
     >
       {Array.from({ length: layout?.numOfCol }).map((_, i) => (
@@ -44,9 +43,16 @@ const LayoutComponent = ({ layout }) => {
           key={i}
           onDragOver={(e) => handleDragOver(e, i)}
           onDrop={handleOnDrop}
-          className={`border border-dotted min-h-10 ${
-            i === dragOver?.index && dragOver?.columnId && "bg-green-100"
-          }`}
+          onClick={() => setSelectedElement({ layout: layout, index: i })}
+          className={`border border-dashed min-h-10 
+            ${i === dragOver?.index && dragOver?.columnId && "bg-green-100"}
+            ${
+              layout?.id === selectedElement?.layout?.id &&
+              i === selectedElement?.index &&
+              "border-green-400 border-2"
+            }
+            `}
+          style={{ ...layout?.[i]?.outerStyle }}
         >
           {getElement(layout?.[i]) ?? "drag element here"}
         </div>

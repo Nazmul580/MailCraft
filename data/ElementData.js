@@ -22,20 +22,35 @@ export const elements = [
       margin: "0px",
       backgroundColor: "transparent",
     },
+    outerStyle: {
+      display: "flex",
+      justifyContent: "flex-start",
+    },
     settings: [
-      "fontSize",
-      "color",
-      "fontWeight",
-      "textAlign",
-      "padding",
-      "margin",
-      "backgroundColor",
+      { key: "fontSize", label: "Font Size", type: "text" },
+      { key: "color", label: "Text Color", type: "color" },
+      {
+        key: "fontWeight",
+        label: "Font Weight",
+        type: "select",
+        options: ["normal", "bold", "lighter"],
+      },
+      {
+        key: "textAlign",
+        label: "Text Align",
+        type: "select",
+        options: ["left", "center", "right"],
+      },
+      { key: "padding", label: "Padding", type: "text" },
+      { key: "margin", label: "Margin", type: "text" },
+      { key: "backgroundColor", label: "Background", type: "color" },
     ],
   },
+
   {
     id: "image-1",
     type: "image",
-    tag: "img", // Image er jonno 'img' tag
+    tag: "img",
     name: "Image",
     icon: <CiImageOn size={20} />,
     defaultContent: "https://via.placeholder.com/150",
@@ -45,12 +60,22 @@ export const elements = [
       borderRadius: "0px",
       margin: "0px",
     },
-    settings: ["width", "height", "borderRadius", "margin"],
+    outerStyle: {
+      display: "flex",
+      justifyContent: "center",
+    },
+    settings: [
+      { key: "width", label: "Width", type: "text" },
+      { key: "height", label: "Height", type: "text" },
+      { key: "borderRadius", label: "Border Radius", type: "text" },
+      { key: "margin", label: "Margin", type: "text" },
+    ],
   },
+
   {
     id: "button-1",
     type: "button",
-    tag: "button", // Button er jonno 'button' tag
+    tag: "button",
     name: "Button",
     icon: <RxButton size={20} />,
     defaultContent: "Click Me",
@@ -64,34 +89,48 @@ export const elements = [
       cursor: "pointer",
       margin: "0px",
     },
+    outerStyle: {
+      display: "flex",
+      justifyContent: "center",
+    },
     settings: [
-      "backgroundColor",
-      "color",
-      "fontSize",
-      "padding",
-      "borderRadius",
-      "border",
-      "margin",
+      { key: "backgroundColor", label: "Background", type: "color" },
+      { key: "color", label: "Text Color", type: "color" },
+      { key: "fontSize", label: "Font Size", type: "text" },
+      { key: "padding", label: "Padding", type: "text" },
+      { key: "borderRadius", label: "Border Radius", type: "text" },
+      { key: "border", label: "Border", type: "text" },
+      { key: "margin", label: "Margin", type: "text" },
     ],
   },
+
   {
     id: "divider-1",
     type: "divider",
-    tag: "hr", // Divider er jonno 'hr' tag
+    tag: "hr",
     name: "Divider",
     icon: <AiOutlineVerticalAlignMiddle size={20} />,
     style: {
       height: "1px",
-      border: "none",
       backgroundColor: "#cccccc",
       margin: "10px 0",
+      border: "none",
     },
-    settings: ["height", "backgroundColor", "margin"],
+    outerStyle: {
+      display: "flex",
+      justifyContent: "center",
+    },
+    settings: [
+      { key: "height", label: "Height", type: "text" },
+      { key: "backgroundColor", label: "Color", type: "color" },
+      { key: "margin", label: "Margin", type: "text" },
+    ],
   },
+
   {
     id: "social-1",
     type: "social",
-    tag: "div", // Social links container er jonno 'div'
+    tag: "div",
     name: "Social Links",
     icon: <IoShareSocialOutline size={20} />,
     defaultContent: ["facebook", "twitter", "instagram"],
@@ -101,19 +140,42 @@ export const elements = [
       justifyContent: "flex-start",
       margin: "10px 0",
     },
-    settings: ["display", "gap", "justifyContent", "margin"],
+    outerStyle: {
+      display: "flex",
+      justifyContent: "center",
+    },
+    settings: [
+      {
+        key: "justifyContent",
+        label: "Alignment",
+        type: "select",
+        options: ["flex-start", "center", "flex-end"],
+      },
+      { key: "gap", label: "Gap", type: "text" },
+      { key: "margin", label: "Margin", type: "text" },
+    ],
   },
+
   {
-    id: "logo",
+    id: "logo-1",
     type: "image",
-    tag: "img", // Social links container er jonno 'div'
+    tag: "img",
     name: "Logo",
     icon: <FiCommand size={20} />,
     defaultContent: "https://via.placeholder.com/150",
     style: {
-      margin: "0",
-      maxHeigth: "40px",
+      width: "auto",
+      height: "40px",
+      margin: "0px",
     },
-    settings: ["width", "height", "margin"],
+    outerStyle: {
+      display: "flex",
+      justifyContent: "center",
+    },
+    settings: [
+      { key: "width", label: "Width", type: "text" },
+      { key: "height", label: "Height", type: "text" },
+      { key: "margin", label: "Margin", type: "text" },
+    ],
   },
 ];

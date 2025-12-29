@@ -5,7 +5,8 @@ const TemplateContext = createContext();
 
 export const TemplateContextProvider = ({ children }) => {
   const [template, setTemplate] = useState([]);
-  const value = { template, setTemplate };
+  const [selectedElement, setSelectedElement] = useState([]);
+  const value = { template, setTemplate, selectedElement, setSelectedElement };
 
   return <TemplateContext value={value}>{children}</TemplateContext>;
 };
